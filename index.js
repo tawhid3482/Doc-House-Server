@@ -24,9 +24,30 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     const doctorsCollection = client.db("docDb").collection("doctors");
+    const feedbackCollection = client.db("docDb").collection("feedback");
+    const serviceCollection = client.db("docDb").collection("service");
+    const srProductsCollection = client.db("docDb").collection("srProducts");
 
     app.get("/doctors", async (req, res) => {
       const result = await doctorsCollection.find().toArray();
+      res.send(result);
+    });
+    app.get("/feedback", async (req, res) => {
+      const result = await feedbackCollection.find().toArray();
+      res.send(result);
+    });
+    app.get("/service", async (req, res) => {
+      const result = await serviceCollection.find().toArray();
+      res.send(result);
+    });
+    app.get("/srProducts", async (req, res) => {
+      const result = await srProductsCollection.find().toArray();
+      res.send(result);
+    });
+    app.get("/srProducts/:service", async (req, res) => {
+      const service = req.params.service
+      const query = {service:service}
+      const result = await srProductsCollection.find(query).toArray();
       res.send(result);
     });
 
