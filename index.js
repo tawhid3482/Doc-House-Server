@@ -126,6 +126,17 @@ async function run() {
       const result = await doctorsCollection.find().toArray();
       res.send(result);
     });
+
+    app.delete("/doctors/:id", verifyToken, verifyAdmin, async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await doctorsCollection.deleteOne(query);
+      res.send(result);
+    });
+
+
+
+
     app.get("/feedback", async (req, res) => {
       const result = await feedbackCollection.find().toArray();
       res.send(result);
