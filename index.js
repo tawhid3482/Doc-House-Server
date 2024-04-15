@@ -76,7 +76,7 @@ async function run() {
       res.send(result);
     });
 
-    app.get("/users", verifyToken, verifyAdmin, async (req, res) => {
+    app.get("/users",  async (req, res) => {
       const result = await usersCollection.find().toArray();
       // console.log(req.headers);
       res.send(result);
@@ -159,6 +159,15 @@ async function run() {
       const result = await srProductsCollection.find().toArray();
       res.send(result);
     });
+    
+    app.delete("/srProducts/:id",  async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await srProductsCollection.deleteOne(query);
+      res.send(result);
+    });
+
+
     app.get("/srProducts/:service", async (req, res) => {
       const service = req.params.service
       const query = {service:service}
