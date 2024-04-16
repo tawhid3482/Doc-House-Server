@@ -151,6 +151,12 @@ async function run() {
       res.send(result);
     });
 
+    app.post("/service",verifyToken,verifyToken, async(req,res)=>{
+      const serve = req.body;
+      const result = await serviceCollection.insertOne(serve)
+      res.send(result)
+    })
+
     app.delete("/service/:id", verifyToken, verifyAdmin, async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
