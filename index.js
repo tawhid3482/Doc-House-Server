@@ -122,10 +122,15 @@ async function run() {
 
 
 
-    app.get("/doctors", async (req, res) => {
+    app.get("/doctors", verifyToken, async (req, res) => {
       const result = await doctorsCollection.find().toArray();
       res.send(result);
     });
+    app.post("/doctors",async(req,res)=>{
+      const doc = req.body;
+      const result = await doctorsCollection.insertOne(doc)
+      res.send(result)
+    })
 
     app.delete("/doctors/:id", verifyToken, verifyAdmin, async (req, res) => {
       const id = req.params.id;
