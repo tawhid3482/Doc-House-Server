@@ -57,7 +57,7 @@ async function run() {
     const verifyAdmin = async (req, res, next) => {
       const email = req.decoded.email;
       const query = { email: email };
-      const user = await userCollection.findOne(query);
+      const user = await usersCollection.findOne(query);
       const isAdmin = user?.role === "admin";
       if (!isAdmin) {
         return res.status(401).send({ message: "forbidden access" });
@@ -151,7 +151,7 @@ async function run() {
       res.send(result);
     });
 
-    app.post("/service",verifyToken,verifyToken, async(req,res)=>{
+    app.post("/service",verifyToken,verifyAdmin, async(req,res)=>{
       const serve = req.body;
       const result = await serviceCollection.insertOne(serve)
       res.send(result)
