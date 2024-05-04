@@ -41,7 +41,7 @@ async function run() {
 
     // middleWare for jwt
     const verifyToken = (req, res, next) => {
-      // console.log(req.headers);
+      // console.log('amr token',req.headers.authorization);
       if (!req.headers.authorization) {
         return res.status(401).send({ message: "unauthorized access" });
       }
@@ -54,6 +54,7 @@ async function run() {
         next();
       });
     };
+
     const verifyAdmin = async (req, res, next) => {
       const email = req.decoded.email;
       const query = { email: email };
@@ -76,9 +77,10 @@ async function run() {
       res.send(result);
     });
 
-    app.get("/users",  async (req, res) => {
-      const result = await usersCollection.find().toArray();
+    app.get("/users",verifyToken,verifyAdmin, async (req, res) => {
+
       // console.log(req.headers);
+      const result = await usersCollection.find().toArray();
       res.send(result);
     });
 
@@ -96,7 +98,7 @@ async function run() {
       res.send({ admin });
     });
 
-    app.delete("/users/:id", verifyToken, verifyAdmin, async (req, res) => {
+    app.delete("/users/:id",verifyToken,  async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
       const result = await usersCollection.deleteOne(query);
@@ -105,8 +107,7 @@ async function run() {
 
     app.patch(
       "/users/admin/:id",
-      verifyToken,
-      verifyAdmin,
+      
       async (req, res) => {
         const id = req.params.id;
         const query = { _id: new ObjectId(id) };
@@ -122,11 +123,11 @@ async function run() {
 
 
 
-    app.get("/doctors", verifyToken, async (req, res) => {
+    app.get("/doctors",  async (req, res) => {
       const result = await doctorsCollection.find().toArray();
       res.send(result);
     });
-    app.post("/doctors",async(req,res)=>{
+    app.post("/doctors",verifyToken,verifyAdmin,async(req,res)=>{
       const doc = req.body;
       const result = await doctorsCollection.insertOne(doc)
       res.send(result)
@@ -177,6 +178,13 @@ async function run() {
       const result = await srProductsCollection.deleteOne(query);
       res.send(result);
     });
+
+    app.post("/srProducts",verifyToken,verifyAdmin,async(req,res)=>{
+      const srPro = req.body;
+      const result = await srProductsCollection.insertOne(srPro)
+      res.send(result)
+    })
+
 
 
     app.get("/srProducts/:service", async (req, res) => {
