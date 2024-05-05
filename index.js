@@ -123,6 +123,7 @@ async function run() {
 
 
 
+
     app.get("/doctors",  async (req, res) => {
       const result = await doctorsCollection.find().toArray();
       res.send(result);
@@ -194,10 +195,13 @@ async function run() {
       res.send(result);
     });
 
-    app.get('/appointment',async(req,res)=>{
-      const result = await appointmentCollection.find().toArray()
-      res.send(result)
-    })
+   
+    app.get('/appointment',verifyToken, async (req, res) => {
+      const email = req.query.email; 
+      const filter = { email: email };
+      const result = await appointmentCollection.find(filter).toArray();
+      res.send(result);
+    });
 
     app.post('/appointment',async(req,res)=>{
       const appointmentItem = req.body;
